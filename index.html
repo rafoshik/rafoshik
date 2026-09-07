@@ -72,13 +72,24 @@ table { width: 100%; border-collapse: collapse; background: #fff; border-radius:
 td { padding: 9px 12px; border-bottom: 1px solid #eee; font-size: 17px; }
 td.en { direction: ltr; text-align: left; font-weight: 700; }
 td.mark { width: 34px; text-align: center; font-size: 20px; }
+td.he { text-align: right; }
+td.big { font-size: 20px; padding: 11px 14px; }
+#wordlist td.en { color: #1d6f6f; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
+  <!-- STUDY -->
+  <div id="study" class="card">
+    <h1>In the classroom 1 📖</h1>
+    <div class="sub">קראי ולמדי את המילים, וכשאת מוכנה — לחצי על הכפתור</div>
+    <table id="wordlist"></table>
+    <button class="btn" style="margin-top:20px" onclick="toStart()">אני מוכנה — למבחן ➡</button>
+  </div>
+
   <!-- START -->
-  <div id="start" class="card">
+  <div id="start" class="card hidden">
     <h1>מבחן אנגלית 📚</h1>
     <div class="sub">In the classroom 1 — כתבי את המילה באנגלית</div>
     <button class="btn" onclick="begin(true)">התחל מבחן — עם עזרה 💡</button>
@@ -122,6 +133,7 @@ td.mark { width: 34px; text-align: center; font-size: 20px; }
     <div class="msg" id="finalMsg"></div>
     <table id="review"></table>
     <button class="btn" style="margin-top:18px" onclick="location.reload()">מבחן חדש 🔁</button>
+    <button class="btn ghost" onclick="backToStudy()">חזרה לרשימת המילים 📖</button>
   </div>
 
 </div>
@@ -144,6 +156,20 @@ let list = [], i = 0, score = 0, helpMode = false, revealed = 0, answered = fals
 
 const $ = id => document.getElementById(id);
 const norm = s => s.toLowerCase().replace(/\s+/g, " ").trim();
+
+$("wordlist").innerHTML = WORDS.map(w =>
+  '<tr><td class="en big">' + w.en + '</td><td class="he big">' + w.he + '</td></tr>'
+).join("");
+
+function toStart() {
+  $("study").classList.add("hidden");
+  $("start").classList.remove("hidden");
+}
+
+function backToStudy() {
+  $("end").classList.add("hidden");
+  $("study").classList.remove("hidden");
+}
 
 function begin(help) {
   helpMode = help;
