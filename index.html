@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מבחן אנגלית – In the classroom 1</title>
+<style>
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 20px;
+  font-family: "Varela Round", "Rubik", "Segoe UI", Arial, sans-serif;
+  background: #fffdf2;
+  color: #222;
+  display: flex; justify-content: center;
+}
+.wrap { width: 100%; max-width: 620px; }
+.card {
+  background: #ffeb6b;
+  border: 8px solid #2fa8a8;
+  border-radius: 22px;
+  padding: 26px 22px;
+  box-shadow: 0 6px 0 rgba(0,0,0,.08);
+}
+h1 { margin: 0 0 6px; font-size: 30px; color: #1d6f6f; text-align: center; }
+.sub { text-align: center; color: #555; margin-bottom: 22px; font-size: 16px; }
+.btn {
+  display: block; width: 100%;
+  padding: 15px 18px; margin: 10px 0;
+  font-size: 20px; font-family: inherit; font-weight: 700;
+  border: none; border-radius: 14px; cursor: pointer;
+  background: #2fa8a8; color: #fff;
+  box-shadow: 0 4px 0 #1d6f6f;
+  transition: transform .06s;
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #1d6f6f; }
+.btn.alt { background: #ff8a3d; box-shadow: 0 4px 0 #c85f1e; }
+.btn.ghost { background: #fff; color: #1d6f6f; box-shadow: 0 4px 0 #cfd8d8; }
+.btn.small { width: auto; display: inline-block; padding: 10px 18px; font-size: 16px; margin: 6px 4px; }
+.hidden { display: none !important; }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: 700; color: #1d6f6f; margin-bottom: 12px; }
+.bar { height: 12px; background: #fff; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.bar > i { display: block; height: 100%; background: #2fa8a8; width: 0; transition: width .3s; }
+
+.word { font-size: 46px; font-weight: 800; text-align: center; margin: 18px 0 6px; color: #143f3f; }
+.label { text-align: center; color: #6b6b3f; margin-bottom: 14px; font-size: 15px; }
+
+input[type=text] {
+  width: 100%; padding: 16px; font-size: 26px; text-align: center;
+  direction: ltr; border: 3px solid #2fa8a8; border-radius: 14px;
+  background: #fff; font-family: inherit; outline: none;
+}
+input.ok { border-color: #2eab55; background: #f1fff5; }
+input.bad { border-color: #e0533d; background: #fff4f2; }
+
+.hintrow { text-align: center; margin-top: 12px; min-height: 34px; }
+.hintword { font-size: 26px; letter-spacing: 6px; direction: ltr; display: inline-block; color: #1d6f6f; font-weight: 800; }
+.live { text-align: center; font-size: 18px; min-height: 26px; margin-top: 8px; font-weight: 700; }
+.live.good { color: #2eab55; }
+.live.bad { color: #e0533d; }
+
+.feedback { text-align: center; font-size: 22px; font-weight: 800; margin-top: 16px; }
+.feedback .ans { direction: ltr; display: inline-block; }
+.green { color: #2eab55; }
+.red { color: #e0533d; }
+
+.score { font-size: 58px; text-align: center; font-weight: 800; color: #1d6f6f; margin: 10px 0; direction: ltr; unicode-bidi: isolate; }
+.score .pct { font-size: 30px; color: #5a8f8f; display: block; }
+.msg { text-align: center; font-size: 22px; margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; margin-top: 14px; }
+td { padding: 9px 12px; border-bottom: 1px solid #eee; font-size: 17px; }
+td.en { direction: ltr; text-align: left; font-weight: 700; }
+td.mark { width: 34px; text-align: center; font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- START -->
+  <div id="start" class="card">
+    <h1>מבחן אנגלית 📚</h1>
+    <div class="sub">In the classroom 1 — כתבי את המילה באנגלית</div>
+    <button class="btn" onclick="begin(true)">התחל מבחן — עם עזרה 💡</button>
+    <button class="btn alt" onclick="begin(false)">התחל מבחן — ללא עזרה ✏️</button>
+    <div class="sub" style="margin:16px 0 0; font-size:14px">
+      עם עזרה: מקבלים רמז לאות הבאה ובודקים תוך כדי הכתיבה אם נכון.
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="card hidden">
+    <div class="topbar">
+      <span id="qnum"></span>
+      <span id="scoreNow"></span>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+
+    <div class="label">תרגמי לאנגלית:</div>
+    <div class="word" id="heb"></div>
+
+    <input type="text" id="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type here...">
+    <div class="live" id="live"></div>
+
+    <div class="hintrow" id="hintrow">
+      <div class="hintword" id="hintword"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div style="text-align:center; margin-top:14px">
+      <button class="btn small ghost hidden" id="hintBtn" onclick="giveHint()">💡 רמז — האות הבאה</button>
+      <button class="btn small" id="checkBtn" onclick="check()">בדיקה ✔</button>
+      <button class="btn small alt hidden" id="nextBtn" onclick="next()">הבא ➡</button>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div id="end" class="card hidden">
+    <h1>סיימת! 🎉</h1>
+    <div class="score" id="finalScore"></div>
+    <div class="msg" id="finalMsg"></div>
+    <table id="review"></table>
+    <button class="btn" style="margin-top:18px" onclick="location.reload()">מבחן חדש 🔁</button>
+  </div>
+
+</div>
+
+<script>
+const WORDS = [
+  { he: "לְמַטָּה",      en: "below" },
+  { he: "לְהַשְׁלִים",    en: "complete" },
+  { he: "מִילּוֹן",       en: "dictionary" },
+  { he: "לְגַלּוֹת",      en: "find out" },
+  { he: "הוֹרָאוֹת",     en: "instructions" },
+  { he: "הֵפֶךְ",         en: "opposite" },
+  { he: "לְהָרִים",       en: "raise" },
+  { he: "לַחֲזוֹר",       en: "repeat" },
+  { he: "לְאַיֵּית",      en: "spell" },
+  { he: "אוֹצַר מִילִּים", en: "vocabulary" }
+];
+
+let list = [], i = 0, score = 0, helpMode = false, revealed = 0, answered = false, results = [];
+
+const $ = id => document.getElementById(id);
+const norm = s => s.toLowerCase().replace(/\s+/g, " ").trim();
+
+function begin(help) {
+  helpMode = help;
+  list = WORDS.slice().sort(() => Math.random() - 0.5);
+  i = 0; score = 0; results = [];
+  $("start").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("hintBtn").classList.toggle("hidden", !help);
+  show();
+}
+
+function show() {
+  answered = false; revealed = 0;
+  const q = list[i];
+  $("heb").textContent = q.he;
+  $("qnum").textContent = "שאלה " + (i + 1) + " מתוך " + list.length;
+  $("scoreNow").textContent = "ניקוד: " + score;
+  $("barFill").style.width = (i / list.length * 100) + "%";
+  const a = $("answer");
+  a.value = ""; a.className = ""; a.disabled = false; a.focus();
+  $("live").textContent = ""; $("live").className = "live";
+  $("hintword").textContent = "";
+  $("feedback").textContent = "";
+  $("checkBtn").classList.remove("hidden");
+  $("nextBtn").classList.add("hidden");
+  $("hintBtn").classList.toggle("hidden", !helpMode);
+}
+
+$("answer").addEventListener("input", () => {
+  if (!helpMode || answered) return;
+  const typed = norm($("answer").value);
+  const target = norm(list[i].en);
+  const box = $("answer"), live = $("live");
+  if (typed === "") { box.className = ""; live.textContent = ""; live.className = "live"; return; }
+  if (target.startsWith(typed)) {
+    box.className = "ok";
+    if (typed === target) { live.textContent = "מושלם! ✅ לחצי בדיקה"; }
+    else { live.textContent = "יופי, ממשיכים... 👍"; }
+    live.className = "live good";
+  } else {
+    box.className = "bad";
+    live.textContent = "אופס, יש טעות — נסי שוב ✏️";
+    live.className = "live bad";
+  }
+});
+
+$("answer").addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  answered ? next() : check();
+});
+
+function giveHint() {
+  const target = list[i].en;
+  revealed = Math.min(revealed + 1, target.length);
+  $("hintword").textContent = target.slice(0, revealed) + "_".repeat(Math.max(0, target.length - revealed));
+}
+
+function check() {
+  if (answered) return;
+  answered = true;
+  const q = list[i];
+  const ok = norm($("answer").value) === norm(q.en);
+  if (ok) score++;
+  results.push({ he: q.he, en: q.en, given: $("answer").value.trim(), ok: ok });
+  $("answer").disabled = true;
+  $("answer").className = ok ? "ok" : "bad";
+  $("live").textContent = "";
+  $("feedback").innerHTML = ok
+    ? '<span class="green">נכון מאוד! 🎉</span>'
+    : '<span class="red">לא נכון 😕</span><br><span style="font-size:18px">התשובה: <b class="ans">' + q.en + '</b></span>';
+  $("scoreNow").textContent = "ניקוד: " + score;
+  $("checkBtn").classList.add("hidden");
+  $("hintBtn").classList.add("hidden");
+  $("nextBtn").classList.remove("hidden");
+  $("nextBtn").textContent = (i === list.length - 1) ? "לתוצאה 🏁" : "הבא ➡";
+  $("nextBtn").focus();
+}
+
+function next() {
+  i++;
+  if (i < list.length) { show(); return; }
+  finish();
+}
+
+function finish() {
+  $("quiz").classList.add("hidden");
+  $("end").classList.remove("hidden");
+  const pct = Math.round(score / list.length * 100);
+  $("finalScore").innerHTML = score + " / " + list.length + '<span class="pct">' + pct + '%</span>';
+  let msg;
+  if (pct === 100) msg = "מושלם!! כל הכבוד! 🌟🌟🌟";
+  else if (pct >= 80) msg = "מצוין! עבודה יפה מאוד 😃";
+  else if (pct >= 60) msg = "יפה! עוד קצת תרגול ותהיי אלופה 💪";
+  else msg = "לא נורא — ננסה שוב ונשתפר! 📖";
+  $("finalMsg").textContent = msg;
+  $("review").innerHTML = results.map(r =>
+    '<tr><td class="mark">' + (r.ok ? "✅" : "❌") + '</td>' +
+    '<td>' + r.he + '</td>' +
+    '<td class="en">' + (r.en) + '</td></tr>'
+  ).join("");
+}
+</script>
+</body>
+</html>
